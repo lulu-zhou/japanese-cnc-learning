@@ -13,9 +13,9 @@ main{max-width:820px;margin:auto;padding:14px 12px 90px}.nav{display:flex;gap:8p
 footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:9px 12px max(9px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;z-index:10}footer button{flex:1;max-width:240px;padding:11px;border-radius:12px;border:1px solid var(--line);font-weight:800}.progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden}.bar{height:100%;background:var(--ok)}.answer{margin-top:7px;color:#166534}.badge{font-size:12px;padding:4px 8px;border-radius:99px;background:#e0e7ff;color:#3730a3;font-weight:700}
 </style></head>
 <body>
-<header><div class="top"><div><div class="title">机械加工实用日语 · 第1个月</div><div class="sub">手机优先 · 发音 · 跟读 · 进度保存 · PWA</div></div><span id="voiceBadge" class="badge">检测语音中</span></div></header>
+<header><div class="top"><div><div class="title">机械加工实用日语 · 第1个月</div><div class="sub">手机优先 · 发音 · 跟读 · 进度保存 · PWA · v3</div></div><span id="voiceBadge" class="badge">检测语音中</span></div></header>
 <main><div class="nav" id="dayNav"></div>
-<div class="card"><div class="section-title">学习设置</div><div class="row"><button class="pill primary" id="normalBtn">正常语速 0.9×</button><button class="pill" id="slowBtn">慢速 0.65×</button><button class="pill" id="kanaBtn">隐藏假名</button><button class="pill" id="voiceBtn">重新检测语音</button></div><div class="note" id="voiceInfo">优先使用设备中的日语语音。</div></div>
+<div class="card"><div class="section-title">学习设置</div><div class="row"><button class="pill primary" id="normalBtn">正常语速 0.9×</button><button class="pill" id="slowBtn">慢速 0.65×</button><button class="pill" id="kanaBtn">隐藏假名</button><button class="pill" id="voiceBtn">重新检测语音</button><button class="pill" id="audioTestBtn">▶ 测试内置音频</button></div><div class="note" id="voiceInfo">优先使用设备中的日语语音。</div></div>
 <div id="content"></div></main>
 <footer><button id="prev">← 前一天</button><button id="done" class="success">✓ 完成今天</button><button id="next">后一天 →</button></footer>
 <script>
@@ -58,7 +58,23 @@ h+='<div class="card"><div class="section-title">③ 工作场景句</div>'+x.se
 h+='<div class="card"><div class="section-title">④ 今日小测</div>'+x.quiz.map((q,i)=>'<div class="sentence"><b>'+(i+1)+'. '+esc(q[0])+'</b><br><button class="pill" onclick="this.nextElementSibling.classList.toggle(\'hidden\')">查看答案</button><div class="answer hidden">'+esc(q[1])+'</div></div>').join('')+'</div>';
 content.innerHTML=h;normalBtn.classList.toggle('primary',rate===.9);slowBtn.classList.toggle('primary',rate===.65);kanaBtn.textContent=hideKana?'显示假名':'隐藏假名';done.textContent=completed.includes(day)?'✓ 今天已完成':'✓ 完成今天';localStorage.setItem('jc_day',day)}
 function setDay(n){day=Math.min(30,Math.max(1,n));render();scrollTo({top:0,behavior:'smooth'})}
-normalBtn.onclick=()=>{rate=.9;localStorage.setItem('jc_rate',rate);render()};slowBtn.onclick=()=>{rate=.65;localStorage.setItem('jc_rate',rate);render()};kanaBtn.onclick=()=>{hideKana=!hideKana;localStorage.setItem('jc_hideKana',hideKana?'1':'0');render()};voiceBtn.onclick=detectVoices;prev.onclick=()=>setDay(day-1);next.onclick=()=>setDay(day+1);done.onclick=()=>{let a=JSON.parse(localStorage.getItem('jc_done')||'[]');if(!a.includes(day))a.push(day);localStorage.setItem('jc_done',JSON.stringify(a));render()};
+normalBtn.onclick=()=>{rate=.9;localStorage.setItem('jc_rate',rate);render()};slowBtn.onclick=()=>{rate=.65;localStorage.setItem('jc_rate',rate);render()};kanaBtn.onclick=()=>{hideKana=!hideKana;localStorage.setItem('jc_hideKana',hideKana?'1':'0');render()};voiceBtn.onclick=detectVoices;
+audioTestBtn.onclick=async()=>{
+  voiceInfo.textContent='正在测试“加工”的内置MP3…';
+  try{
+    const p=audioMap['加工'];
+    if(!p) throw new Error('audio-index 中没有“加工”');
+    const a=new Audio('./'+p+'?v=3');
+    a.playbackRate=1;
+    a.onplaying=()=>{voiceBadge.textContent='内置音频正在播放 ✓';voiceInfo.textContent='测试成功：正在播放“加工”的内置MP3。'};
+    a.onerror=()=>{voiceBadge.textContent='内置音频加载失败';voiceInfo.textContent='MP3加载失败，请刷新页面后重试。';};
+    await a.play();
+  }catch(e){
+    voiceBadge.textContent='播放失败';
+    voiceInfo.textContent='测试失败：'+(e?.message||e);
+  }
+};
+prev.onclick=()=>setDay(day-1);next.onclick=()=>setDay(day+1);done.onclick=()=>{let a=JSON.parse(localStorage.getItem('jc_done')||'[]');if(!a.includes(day))a.push(day);localStorage.setItem('jc_done',JSON.stringify(a));render()};
 fetch('./audio/audio-index.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(m=>{audioMap=m||{};detectVoices()}).catch(()=>detectVoices());
 if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=detectVoices;setTimeout(detectVoices,300);setTimeout(detectVoices,1500)}
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));render();
