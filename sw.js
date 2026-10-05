@@ -1,4 +1,4 @@
-const CACHE='jcnc-v7';
+const CACHE='jcnc-v8';
 const CORE=['./manifest.webmanifest'];
 
 self.addEventListener('install',event=>{
