@@ -1,0 +1,26 @@
+name: Validate Japanese learning site
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "index.html"
+      - "scripts/speed-learning.js"
+      - "scripts/validate_training.py"
+      - "data/practice-v13.json"
+      - ".github/workflows/validate-learning.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify question data and extract inline script
+        run: python scripts/validate_training.py
+      - name: Check v13 JavaScript syntax
+        run: |
+          node --check scripts/speed-learning.js
+          node --check /tmp/cnc-inline-validate.js
