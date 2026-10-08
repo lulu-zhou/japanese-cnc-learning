@@ -62,6 +62,16 @@ KANJI_FAMILY_TEXTS = [
 ]
 texts.extend(KANJI_FAMILY_TEXTS)
 
+# v13 specialized Chinese-native exercises share the exact strings played in the browser.
+practice_file = ROOT / "data" / "practice-v13.json"
+if practice_file.exists():
+    practice = json.loads(practice_file.read_text(encoding="utf-8"))
+    for group in ("endings", "particles", "traps", "confusions", "listening"):
+        for question in practice.get(group, []):
+            audio = question.get("audio")
+            if audio and isinstance(audio, str):
+                texts.append(audio)
+
 # unique, preserve order
 seen=set(); unique=[]
 for t in texts:
@@ -96,6 +106,9 @@ async def main():
             except Exception as e:
                 print("FAILED", t, repr(e))
     await asyncio.gather(*(guarded(t) for t in unique))
+    missing = [t for t in unique if not (ROOT / audio_index[t]).exists() or (ROOT / audio_index[t]).stat().st_size <= 500]
+    if missing:
+        raise RuntimeError(f"Audio generation incomplete: {len(missing)} missing; examples={missing[:5]}")
     index_path.write_text(
         json.dumps(audio_index, ensure_ascii=False, indent=2),
         encoding="utf-8"
