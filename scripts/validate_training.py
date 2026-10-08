@@ -8,10 +8,10 @@ html = (root / "index.html").read_text(encoding="utf-8")
 data = json.loads((root / "data/practice-v13.json").read_text(encoding="utf-8"))
 groups = ("endings", "particles", "traps", "confusions", "listening")
 assert data["version"] == 13
-assert "PWA · v13" in html
+assert "PWA · v13.1" in html
 for tag in ('skillHub', 'skillPanel', 'skillStatus', 'skillErrorBookBtn'):
     assert f'id="{tag}"' in html, f"missing {tag}"
-assert 'src="./scripts/speed-learning.js?v=13"' in html
+assert 'src="./scripts/speed-learning.js?v=13.1"' in html
 for group in groups:
     questions = data[group]
     assert len(questions) >= 8, (group, len(questions))
