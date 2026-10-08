@@ -71,6 +71,8 @@ function frontOf(q){
   return '<div class="drill-main drill-question">'+esc(q.prompt)+'</div>'
 }
 function audioBtn(q){
+  // Grammar/terminology checks must not play the correct answer before choosing.
+  if(q.group==='particles'||q.group==='confusions')return '';
   return q.audio?'<button class="pill" type="button" data-skill-play>▶ '+((q.group==='endings'||q.group==='listening')?'播放日语':'听日语')+'</button>':''
 }
 function detail(q){
@@ -80,7 +82,7 @@ function detail(q){
   else if(q.group==='traps')full='<b>'+esc(q.word)+'</b>：'+esc(q.answer)+'<p>小心中文联想：'+esc(q.trap)+'</p><p>例：'+esc(q.example)+'</p>';
   else if(q.group==='confusions')full='<b>'+esc(q.answer)+'</b><p>'+esc(q.why)+'</p>';
   else full='<b>'+esc(q.audio)+'</b><p>听力意思：'+esc(q.meaning)+'</p><p>关键词：'+esc(q.answer)+'</p>';
-  return '<div class="skill-explanation">'+full+'</div>'
+  return '<div class="skill-explanation">'+full+'</div>'+((q.group==='particles'||q.group==='confusions')?'<button class="pill" type="button" data-skill-play>▶ 听正确日语</button>':'')
 }
 function renderQuestion(scroll){
   locked=false;
