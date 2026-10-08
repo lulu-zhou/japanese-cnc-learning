@@ -32,7 +32,7 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px sol
 @media(max-width:420px){.skill-options{grid-template-columns:1fr}}
 </style></head>
 <body>
-<header><div class="top"><div><div class="title">机械加工实用日语 · 前90天</div><div class="sub">手机优先 · 发音 · 跟读 · 进度保存 · PWA · v13</div></div><span id="voiceBadge" class="badge">检测语音中</span></div></header>
+<header><div class="top"><div><div class="title">机械加工实用日语 · 前90天</div><div class="sub">手机优先 · 发音 · 跟读 · 进度保存 · PWA · v13.1</div></div><span id="voiceBadge" class="badge">检测语音中</span></div></header>
 <main>
 <div class="card nav-card">
   <div class="section-title">课程导航</div>
@@ -446,5 +446,5 @@ fetch('./audio/audio-index.json?v=13',{cache:'no-store'})
 if('speechSynthesis'in window){speechSynthesis.onvoiceschanged=detectVoices;setTimeout(detectVoices,300);setTimeout(detectVoices,1500)}
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));render();updateReviewCounts();
 </script>
-<script src="./scripts/speed-learning.js?v=13"></script>
+<script src="./scripts/speed-learning.js?v=13.1"></script>
 </body></html>
