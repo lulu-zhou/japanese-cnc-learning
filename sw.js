@@ -1,5 +1,5 @@
-const CACHE='jcnc-v12';
-const CORE=['./manifest.webmanifest'];
+const CACHE='jcnc-v13';
+const CORE=['./manifest.webmanifest','./scripts/speed-learning.js?v=13','./data/practice-v13.json'];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();
